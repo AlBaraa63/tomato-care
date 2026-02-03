@@ -153,8 +153,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # Project Specific
-data/
-outputs/
+/data/
+/outputs/
 model/*.pth
 model/*.onnx
 model/*.tflite
