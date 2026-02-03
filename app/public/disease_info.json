@@ -1,0 +1,342 @@
+{
+  "Tomato___Bacterial_spot": {
+    "name": "Bacterial Spot",
+    "cause": "Xanthomonas bacteria",
+    "symptoms": [
+      "Small, dark brown to black spots on leaves",
+      "Spots may have yellow halos",
+      "Lesions on stems and fruit",
+      "Leaves may yellow and drop prematurely"
+    ],
+    "treatment": {
+      "organic": [
+        "Remove and destroy infected plant parts",
+        "Apply copper-based fungicides (available at ACE Hardware UAE, Plantopia)",
+        "Use neem oil spray as preventive measure",
+        "Improve air circulation around plants"
+      ],
+      "chemical": [
+        "Copper hydroxide sprays",
+        "Mancozeb-copper combinations",
+        "Apply early morning to avoid leaf burn in UAE heat"
+      ]
+    },
+    "prevention": [
+      "Use disease-free seeds and transplants",
+      "Avoid overhead watering (use drip irrigation)",
+      "Space plants adequately for UAE's humid conditions",
+      "Rotate crops (avoid planting tomatoes in same spot for 2-3 years)",
+      "Clean garden tools with 10% bleach solution"
+    ],
+    "uae_notes": "Common during humid winter months (Nov-Feb). Monitor plants closely during morning dew periods."
+  },
+  
+  "Tomato___Early_blight": {
+    "name": "Early Blight",
+    "cause": "Alternaria solani fungus",
+    "symptoms": [
+      "Dark brown spots with concentric rings (target-like pattern)",
+      "Starts on lower, older leaves",
+      "Leaves turn yellow and drop",
+      "Can affect stems and fruit",
+      "Collar rot near soil line"
+    ],
+    "treatment": {
+      "organic": [
+        "Remove infected lower leaves immediately",
+        "Apply baking soda spray (1 tbsp per liter water)",
+        "Use compost tea as foliar spray",
+        "Mulch around plants to prevent soil splash"
+      ],
+      "chemical": [
+        "Chlorothalonil fungicides",
+        "Azoxystrobin-based products",
+        "Apply every 7-10 days during outbreaks"
+      ]
+    },
+    "prevention": [
+      "Stake plants to improve air circulation",
+      "Water at soil level, not on leaves",
+      "Apply 5-10cm mulch layer",
+      "Remove plant debris at end of season",
+      "Use resistant varieties when possible"
+    ],
+    "uae_notes": "Most common tomato disease in UAE home gardens. Worse in warm, humid conditions. Best growing season: October-March."
+  },
+  
+  "Tomato___Late_blight": {
+    "name": "Late Blight",
+    "cause": "Phytophthora infestans oomycete",
+    "symptoms": [
+      "Large, irregular, water-soaked spots on leaves",
+      "White fuzzy growth on leaf undersides (in humid conditions)",
+      "Stems develop dark brown lesions",
+      "Fruit develops firm, dark, greasy spots",
+      "Rapid plant death possible"
+    ],
+    "treatment": {
+      "organic": [
+        "IMMEDIATE removal and destruction of infected plants",
+        "Do NOT compost infected material - dispose in trash",
+        "Copper fungicides as emergency treatment",
+        "Bacillus-based biocontrol products"
+      ],
+      "chemical": [
+        "Chlorothalonil preventive sprays",
+        "Mefenoxam for active infections",
+        "Apply before rain events"
+      ]
+    },
+    "prevention": [
+      "Plant resistant varieties",
+      "Ensure excellent drainage",
+      "Avoid planting near potato crops",
+      "Monitor weather - worst in cool, wet conditions",
+      "Inspect plants daily during high-risk periods"
+    ],
+    "uae_notes": "Less common in UAE due to dry climate, but can occur during unusually rainy winters or in overwatered gardens. Act fast if detected."
+  },
+  
+  "Tomato___Leaf_Mold": {
+    "name": "Leaf Mold",
+    "cause": "Passalora fulva fungus",
+    "symptoms": [
+      "Pale green/yellowish spots on upper leaf surface",
+      "Olive-green to brown velvety growth on leaf undersides",
+      "Leaves curl, wither, and drop",
+      "Usually starts on lower leaves",
+      "Rarely affects fruit"
+    ],
+    "treatment": {
+      "organic": [
+        "Improve greenhouse/indoor ventilation",
+        "Remove affected leaves promptly",
+        "Apply sulfur-based fungicides",
+        "Reduce humidity levels"
+      ],
+      "chemical": [
+        "Chlorothalonil sprays",
+        "Copper-based fungicides",
+        "Apply to undersides of leaves"
+      ]
+    },
+    "prevention": [
+      "Space plants generously (60cm apart minimum)",
+      "Prune lower leaves to improve air flow",
+      "Use drip irrigation, avoid wetting leaves",
+      "Maintain humidity below 85%",
+      "Grow resistant varieties"
+    ],
+    "uae_notes": "Common in indoor/greenhouse growing which is popular in UAE. Ensure good ventilation in enclosed growing spaces."
+  },
+  
+  "Tomato___Septoria_leaf_spot": {
+    "name": "Septoria Leaf Spot",
+    "cause": "Septoria lycopersici fungus",
+    "symptoms": [
+      "Small circular spots (2-3mm) with dark edges",
+      "Spots have tan/gray centers with tiny black dots",
+      "Starts on lower leaves after first fruit set",
+      "Severe defoliation possible",
+      "Rarely affects fruit directly"
+    ],
+    "treatment": {
+      "organic": [
+        "Remove and destroy infected leaves",
+        "Apply copper fungicides",
+        "Use bicarbonate sprays",
+        "Mulch to prevent soil splash"
+      ],
+      "chemical": [
+        "Chlorothalonil fungicides",
+        "Mancozeb products",
+        "Begin sprays at first sign of disease"
+      ]
+    },
+    "prevention": [
+      "Rotate crops for 2-3 years",
+      "Stake plants to keep off ground",
+      "Water at soil level early in day",
+      "Remove plant debris thoroughly",
+      "Use disease-free seeds"
+    ],
+    "uae_notes": "Can spread rapidly in UAE winter humidity. Check plants regularly, especially after rain or morning dew."
+  },
+  
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "name": "Spider Mites",
+    "cause": "Tetranychus urticae pest",
+    "symptoms": [
+      "Fine stippling/speckling on leaves (tiny yellow dots)",
+      "Leaves turn bronze/yellow",
+      "Fine webbing on leaf undersides",
+      "Leaves dry out and drop",
+      "Worse in hot, dry conditions"
+    ],
+    "treatment": {
+      "organic": [
+        "Spray plants forcefully with water to dislodge mites",
+        "Apply insecticidal soap (repeat every 3-5 days)",
+        "Use neem oil sprays",
+        "Release predatory mites (Phytoseiulus persimilis)",
+        "Avoid broad-spectrum pesticides"
+      ],
+      "chemical": [
+        "Miticides (abamectin-based)",
+        "Avoid overusing chemicals - mites develop resistance",
+        "Alternate between different pesticide types"
+      ]
+    },
+    "prevention": [
+      "Keep plants well-watered (stressed plants attract mites)",
+      "Mist plants to increase humidity",
+      "Remove heavily infested leaves",
+      "Inspect new plants before bringing into garden",
+      "Encourage natural predators"
+    ],
+    "uae_notes": "VERY common in UAE due to hot, dry summer conditions. Regular monitoring essential. Consider growing tomatoes only in cooler months (Oct-Mar)."
+  },
+  
+  "Tomato___Target_Spot": {
+    "name": "Target Spot",
+    "cause": "Corynespora cassiicola fungus",
+    "symptoms": [
+      "Brown spots with concentric rings (similar to early blight)",
+      "Spots larger than early blight (10-15mm)",
+      "Can affect leaves, stems, and fruit",
+      "Leaves yellow and drop",
+      "Fruit develops sunken dark spots"
+    ],
+    "treatment": {
+      "organic": [
+        "Remove infected plant material",
+        "Improve air circulation",
+        "Apply copper-based fungicides",
+        "Use biofungicides containing Bacillus subtilis"
+      ],
+      "chemical": [
+        "Chlorothalonil fungicides",
+        "Azoxystrobin products",
+        "Rotate fungicide classes to prevent resistance"
+      ]
+    },
+    "prevention": [
+      "Maintain proper plant spacing",
+      "Stake and prune for good air flow",
+      "Avoid overhead irrigation",
+      "Remove plant debris after harvest",
+      "Practice crop rotation"
+    ],
+    "uae_notes": "Often confused with early blight. Both require similar treatment. Focus on prevention through good growing practices."
+  },
+  
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "name": "Yellow Leaf Curl Virus (TYLCV)",
+    "cause": "Begomovirus transmitted by whiteflies",
+    "symptoms": [
+      "Young leaves curl upward and inward",
+      "Leaves become yellow at margins",
+      "Stunted, bushy plant growth",
+      "Flowers drop before fruit sets",
+      "Significantly reduced yield"
+    ],
+    "treatment": {
+      "organic": [
+        "NO CURE - remove and destroy infected plants immediately",
+        "DO NOT compost - bag and dispose in trash",
+        "Control whitefly vectors aggressively",
+        "Use yellow sticky traps for whiteflies",
+        "Apply neem oil to reduce whitefly populations"
+      ],
+      "chemical": [
+        "Imidacloprid for whitefly control (systemic)",
+        "Pyrethroids for adult whiteflies",
+        "Insecticidal soaps"
+      ]
+    },
+    "prevention": [
+      "Use resistant varieties (look for 'Ty' gene in variety name)",
+      "Install fine mesh screens on greenhouse openings",
+      "Control weeds that harbor whiteflies",
+      "Use reflective mulches to repel whiteflies",
+      "Start with healthy transplants from reputable sources"
+    ],
+    "uae_notes": "Whiteflies are MAJOR pests in UAE. This virus is significant concern. Use resistant varieties and focus heavily on whitefly prevention. Consider growing during cooler months when whitefly pressure is lower."
+  },
+  
+  "Tomato___Tomato_mosaic_virus": {
+    "name": "Tomato Mosaic Virus (ToMV)",
+    "cause": "Tobamovirus (highly stable, spreads by contact)",
+    "symptoms": [
+      "Light and dark green mottled pattern on leaves",
+      "Leaves may be distorted or fern-like",
+      "Stunted growth",
+      "Reduced fruit production",
+      "Fruit may show internal browning"
+    ],
+    "treatment": {
+      "organic": [
+        "NO CURE - remove infected plants",
+        "Virus is extremely stable - survives on tools, hands, debris",
+        "Disinfect all tools with 10% bleach or milk solution",
+        "Wash hands thoroughly after handling infected plants",
+        "Do not compost infected material"
+      ],
+      "chemical": [
+        "No chemical treatment exists for plant viruses",
+        "Focus entirely on prevention and vector control"
+      ]
+    },
+    "prevention": [
+      "Use certified virus-free seeds and transplants",
+      "Wash hands before and after handling plants",
+      "Disinfect tools between plants (milk dip works!)",
+      "Do not smoke near plants (tobacco mosaic related)",
+      "Remove and destroy infected plants immediately"
+    ],
+    "uae_notes": "Less common than TYLCV but very persistent. Once in your garden, difficult to eliminate. Strict hygiene practices essential. Consider starting fresh with new soil if persistent problem."
+  },
+  
+  "Tomato___healthy": {
+    "name": "Healthy",
+    "cause": null,
+    "symptoms": [
+      "Vibrant green leaves",
+      "Strong, upright growth",
+      "No spots, yellowing, or deformities",
+      "Active flowering and fruiting"
+    ],
+    "treatment": {
+      "organic": [
+        "Continue current care routine!",
+        "Maintain consistent watering schedule",
+        "Apply balanced fertilizer monthly",
+        "Monitor regularly for early signs of problems"
+      ],
+      "chemical": [
+        "No treatment needed for healthy plants",
+        "Consider preventive fungicide if high-risk conditions"
+      ]
+    },
+    "prevention": [
+      "Maintain current good practices",
+      "Ensure proper nutrition (especially calcium for blossom end rot prevention)",
+      "Keep consistent watering (avoid wet-dry cycles)",
+      "Provide adequate support for growing plants",
+      "Continue monitoring for pests and diseases"
+    ],
+    "uae_notes": "Best growing season in UAE: October to March. Protect from extreme summer heat. Consider shade cloth (30-40%) during hot periods. Use quality potting mix from UAE garden centers like Plantopia, ACE, or Dubai Garden Centre."
+  },
+  
+  "_metadata": {
+    "version": "1.0",
+    "last_updated": "2024",
+    "region": "UAE",
+    "sources": [
+      "PlantVillage Disease Database",
+      "UAE Ministry of Climate Change and Environment",
+      "Local gardening expertise"
+    ],
+    "disclaimer": "This information is for educational purposes. For severe infestations, consult local agricultural extension services."
+  }
+}
