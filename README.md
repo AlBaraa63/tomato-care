@@ -1,104 +1,145 @@
-# 🍅 TomatoCare
+# 🍅 TomatoCare — Project Structure
 
-> AI-powered tomato disease detection for UAE home gardeners
+## What is this?
+This is the folder structure for our TomatoCare project. Every folder has a 
+specific purpose, so we always know where to find things.
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org)
-
-TomatoCare helps home gardeners identify tomato plant diseases using AI. Take a photo, get instant diagnosis with UAE-specific treatment recommendations.
-
-## ✨ Features
-
-- 🔍 **Disease Detection**: Identifies 9 diseases + healthy leaves
-- 📱 **Offline-First**: Works without internet
-- 🔒 **Privacy-Focused**: On-device processing
-- 🌴 **UAE-Specific**: Tailored treatment advice
-
-## 🦠 Supported Diseases
-
-| # | Disease | Cause |
-|---|---------|-------|
-| 1 | Bacterial Spot | *Xanthomonas* bacteria |
-| 2 | Early Blight | *Alternaria solani* fungus |
-| 3 | Late Blight | *Phytophthora infestans* |
-| 4 | Leaf Mold | *Passalora fulva* fungus |
-| 5 | Septoria Leaf Spot | *Septoria lycopersici* fungus |
-| 6 | Spider Mites | *Tetranychus urticae* pest |
-| 7 | Target Spot | *Corynespora cassiicola* fungus |
-| 8 | Yellow Leaf Curl Virus | Begomovirus |
-| 9 | Mosaic Virus | Tobamovirus |
-| 10 | Healthy | - |
-
-## 🚀 Quick Start
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# For GPU support (CUDA 11.8+)
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
-```
-
-## 📊 Usage
-
-```bash
-# Train the model
-python src/train.py
-
-# Quick test (2 epochs)
-python src/train.py --quick-test
-
-# Evaluate on test set
-python src/evaluate.py
-
-# Predict single image
-python src/predict.py path/to/leaf.jpg
-
-# Export for mobile
-python src/export.py
-```
-
-## 📁 Project Structure
+## Folder Map
 
 ```
 TomatoCare/
-├── configs/
-│   └── config.py           # Centralized settings
-├── data/
-│   ├── tomato/             # Dataset (train/val/test)
-│   └── disease_info.json   # UAE treatment database
-├── src/
-│   ├── data/
-│   │   ├── dataset.py      # DataLoaders
-│   │   └── transforms.py   # Augmentations
-│   ├── models/
-│   │   └── classifier.py   # MobileNetV2 architecture
-│   ├── train.py            # Training pipeline
-│   ├── evaluate.py         # Metrics & plots
-│   ├── predict.py          # Single image inference
-│   └── export.py           # Mobile export
-├── outputs/
-│   ├── exploration/        # Dataset visualizations
-│   ├── training/           # Checkpoints & history
-│   ├── evaluation/         # Metrics & confusion matrix
-│   └── mobile/             # Exported models
-├── docs/
-│   └── research.md         # Research & references
-└── app/                    # Future mobile app
+│
+├── data/                        ← ALL dataset-related files live here
+│   ├── raw/                     ← Original downloaded datasets (NEVER modify these)
+│   │   ├── PlantVillage/        ← ~14,500 lab images (10 classes)
+│   │   ├── PlantDoc/            ← ~400 real-world images 
+│   │   ├── TomatoVillage/       ← ~1,000 field images
+│   │   └── Mendeley/            ← ~5,000 Taiwan field images
+│   │
+│   ├── processed/               ← Cleaned, merged, and split dataset
+│   │   ├── train/               ← 70% of data (model learns from this)
+│   │   │   ├── Bacterial_Spot/
+│   │   │   ├── Early_Blight/
+│   │   │   ├── Late_Blight/
+│   │   │   ├── Leaf_Mold/
+│   │   │   ├── Septoria_Leaf_Spot/
+│   │   │   ├── Spider_Mites/
+│   │   │   ├── Target_Spot/
+│   │   │   ├── Yellow_Leaf_Curl_Virus/
+│   │   │   ├── Mosaic_Virus/
+│   │   │   └── Healthy/
+│   │   ├── val/                 ← 15% of data (model checks itself during training)
+│   │   │   └── (same 10 class folders)
+│   │   └── test/                ← 15% of data (final exam — model never sees this until the end)
+│   │       └── (same 10 class folders)
+│   │
+│   └── augmented/               ← Extra images created by augmentation (rotated, flipped, etc.)
+│
+├── notebooks/                   ← Jupyter notebooks (our step-by-step experiments)
+│   ├── 01_EDA.ipynb             ← Step 1: Explore & understand the data
+│   ├── 02_preprocessing.ipynb   ← Step 2: Clean, merge, split the datasets
+│   ├── 03_model_v1.ipynb        ← Step 3: Build & train first model version
+│   ├── 04_model_v2.ipynb        ← Step 4: Improve the model
+│   ├── 05_evaluation.ipynb      ← Step 5: Test & analyze results
+│   └── 06_gradcam.ipynb         ← Step 6: Explainability visualizations
+│
+├── src/                         ← Reusable Python code (functions we use across notebooks)
+│   ├── __init__.py              ← Makes this folder a Python package
+│   ├── data_loader.py           ← Functions to load and prepare images
+│   ├── augmentation.py          ← Data augmentation functions
+│   ├── model.py                 ← Our custom CNN architecture (TomatoCareNet)
+│   ├── train.py                 ← Training loop and callbacks
+│   ├── evaluate.py              ← Evaluation metrics and plots
+│   └── gradcam.py               ← Grad-CAM explainability functions
+│
+├── models/                      ← Saved model files
+│   ├── checkpoints/             ← Auto-saved during training (best weights so far)
+│   └── final/                   ← The finished trained model
+│       ├── tomatocare_best.h5   ← Best Keras model
+│       └── tomatocare.tflite    ← Converted for mobile deployment
+│
+├── results/                     ← All output results
+│   ├── plots/                   ← Training curves, data distribution charts
+│   ├── metrics/                 ← Accuracy, F1, confusion matrices (saved as CSV/JSON)
+│   └── gradcam/                 ← Grad-CAM heatmap images
+│
+├── app/                         ← Mobile app code (Flutter/React Native — later phase)
+│
+├── docs/                        ← Documentation and reports
+│   └── TomatoCare_Research.md   ← Our research document
+│
+├── README.md                    ← This file — project overview
+└── requirements.txt             ← Python packages needed to run the project
 ```
 
-## 🎯 Model
+## Why This Structure?
 
-**MobileNetV2** with transfer learning:
-- Parameters: ~3.4M
-- Input: 224×224 RGB
-- Output: 10-class probabilities
-- Target accuracy: >90%
+### 🔑 Key Principles:
 
-## 📝 License
+1. **`raw/` is sacred** — We NEVER modify original downloaded data. If something goes 
+   wrong with processing, we can always start fresh from raw data.
 
-MIT License
+2. **`processed/` is our working dataset** — After merging all sources, cleaning, and 
+   splitting into train/val/test, this is what the model actually uses.
 
----
+3. **`notebooks/` are numbered** — So anyone (including future-you) can follow the 
+   project step by step, in order.
 
-Made with ❤️ for UAE home gardeners
+4. **`src/` avoids code duplication** — Instead of copying the same function into every 
+   notebook, we write it once in `src/` and import it everywhere.
+
+5. **`models/checkpoints/` saves progress** — Training can take hours. If it crashes at 
+   epoch 80, we don't lose the best model from epoch 65.
+
+6. **`results/` is for evidence** — Every plot, metric, and visualization is saved here.
+   This is what goes into your capstone report.
+
+## The Data Pipeline (How Data Flows)
+
+```
+Step 1: Download         Step 2: Merge & Clean      Step 3: Split
+┌─────────────────┐     ┌──────────────────┐     ┌──────────────┐
+│ data/raw/        │     │ Merge all sources│     │ train/ (70%) │
+│  PlantVillage/   │────▶│ Resize to 224x224│────▶│ val/   (15%) │
+│  PlantDoc/       │     │ Fix labels       │     │ test/  (15%) │
+│  TomatoVillage/  │     │ Remove duplicates│     └──────────────┘
+│  Mendeley/       │     └──────────────────┘            │
+└─────────────────┘                                      ▼
+                                                  Step 4: Augment
+                                                  ┌──────────────┐
+                                                  │ Rotate, flip, │
+                                                  │ brightness,   │
+                                                  │ zoom, noise   │
+                                                  │ (train only!) │
+                                                  └──────────────┘
+                                                         │
+                                                         ▼
+                                                  Step 5: Train
+                                                  ┌──────────────┐
+                                                  │ Feed into CNN │
+                                                  │ TomatoCareNet │
+                                                  └──────────────┘
+```
+
+**Important:** We ONLY augment training data, never validation or test data.
+Validation and test must reflect real-world conditions to give honest results.
+
+## Getting Started
+
+```bash
+# Step 1: Install dependencies
+pip install -r requirements.txt
+
+# Step 2: Download datasets into data/raw/ (see notebooks/01_EDA.ipynb)
+
+# Step 3: Follow the notebooks in order (01, 02, 03...)
+```
+
+## Tech Stack
+- **Python 3.10+**
+- **TensorFlow / Keras** — Deep learning framework
+- **OpenCV** — Image processing
+- **Matplotlib / Seaborn** — Visualization
+- **scikit-learn** — Metrics and data splitting
+- **Albumentations** — Advanced image augmentation
+- **NumPy / Pandas** — Data handling
