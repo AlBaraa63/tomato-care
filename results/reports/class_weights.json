@@ -1,0 +1,12 @@
+{
+    "Tomato___Bacterial_spot": 0.9143255295429209,
+    "Tomato___Early_blight": 1.5430856067732832,
+    "Tomato___Late_blight": 1.0007931665649787,
+    "Tomato___Leaf_Mold": 1.5430856067732832,
+    "Tomato___Septoria_leaf_spot": 1.0348895899053627,
+    "Tomato___Spider_mites Two-spotted_spider_mite": 1.1666429587482219,
+    "Tomato___Target_Spot": 1.3238902340597256,
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": 0.3941134070158578,
+    "Tomato___Tomato_mosaic_virus": 1.8409652076318743,
+    "Tomato___healthy": 1.0508007687379886
+}
