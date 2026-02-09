@@ -1,3 +1,4 @@
+
 import torch
 from pathlib import Path
 
@@ -21,21 +22,22 @@ class Config:
     ]
 
     # ── Image Settings ──
-    IMG_SIZE = 256
+    IMG_SIZE = 224
     IN_CHANNELS = 3
 
     # ── Training Hyperparameters ──
-    BATCH_SIZE = 32
+    BATCH_SIZE = 64
     NUM_EPOCHS = 200
     LEARNING_RATE = 1e-3
     WEIGHT_DECAY = 1e-4
+    GRAD_CLIP_NORM = 1.0
 
     # ── Scheduler ──
     WARMUP_EPOCHS = 5
     MIN_LR = 1e-6
 
     # ── Early Stopping ──
-    PATIENCE = 25
+    PATIENCE = 15
 
     # ── Focal Loss ──
     FOCAL_GAMMA = 2.0

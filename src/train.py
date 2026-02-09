@@ -1,28 +1,33 @@
+
 import torch
 import torch.nn as nn
 import time
 import copy
+import tempfile
+import os
 from torch.amp import autocast, GradScaler
 from torch.utils.tensorboard import SummaryWriter
 from src.config import Config
+from src.data_loader import mixup_data
 
 
 class FocalLoss(nn.Module):
     """
-    Focal Loss â€” a smarter version of CrossEntropyLoss.
+    Focal Loss with label smoothing.
 
-    DOWN-WEIGHTS easy samples and UP-WEIGHTS hard ones.
-    Formula: FL = -alpha * (1 - p)^gamma * log(p)
-
-    gamma=0: Same as regular CrossEntropy
-    gamma=2: Hard samples get ~100x more attention than easy ones
+    Combines three strategies for handling imbalanced, noisy data:
+    - Class weights: pay more attention to rare classes
+    - Focal modulation: focus on hard-to-classify samples
+    - Label smoothing: prevent overconfident predictions on confused classes
     """
 
-    def __init__(self, weight=None, gamma=2.0):
+    def __init__(self, weight=None, gamma=2.0, label_smoothing=0.0):
         super().__init__()
         self.gamma = gamma
         self.weight = weight
-        self.ce = nn.CrossEntropyLoss(weight=weight, reduction='none')
+        self.ce = nn.CrossEntropyLoss(
+            weight=weight, reduction='none', label_smoothing=label_smoothing
+        )
 
     def forward(self, inputs, targets):
         ce_loss = self.ce(inputs, targets)
@@ -34,7 +39,6 @@ class FocalLoss(nn.Module):
 class EarlyStopping:
     """
     Stops training when validation loss stops improving.
-    If no improvement for `patience` epochs, training stops.
     """
 
     def __init__(self, patience=15, min_delta=1e-4):
@@ -58,7 +62,7 @@ class EarlyStopping:
 
 
 def train_one_epoch(model, loader, criterion, optimizer, scaler, device):
-    """Train for one epoch, return average loss and accuracy"""
+    """Train for one epoch with MixUp and gradient clipping."""
     model.train()
     running_loss = 0.0
     correct = 0
@@ -68,19 +72,31 @@ def train_one_epoch(model, loader, criterion, optimizer, scaler, device):
         images = images.to(device, non_blocking=True)
         labels = labels.to(device, non_blocking=True)
 
+        # MixUp augmentation
+        use_mixup = Config.MIXUP_ALPHA > 0
+        if use_mixup:
+            images, y_a, y_b, lam = mixup_data(images, labels, Config.MIXUP_ALPHA)
+
         optimizer.zero_grad()
 
         with autocast(device_type='cuda', enabled=Config.USE_AMP):
             outputs = model(images)
-            loss = criterion(outputs, labels)
+            if use_mixup:
+                loss = lam * criterion(outputs, y_a) + (1 - lam) * criterion(outputs, y_b)
+            else:
+                loss = criterion(outputs, labels)
 
+        # Backward pass with gradient clipping
         scaler.scale(loss).backward()
+        scaler.unscale_(optimizer)
+        torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=Config.GRAD_CLIP_NORM)
         scaler.step(optimizer)
         scaler.update()
 
         running_loss += loss.item() * images.size(0)
         _, predicted = outputs.max(1)
         total += labels.size(0)
+        # Accuracy measured against original labels (not mixed)
         correct += predicted.eq(labels).sum().item()
 
     epoch_loss = running_loss / total
@@ -90,7 +106,7 @@ def train_one_epoch(model, loader, criterion, optimizer, scaler, device):
 
 @torch.no_grad()
 def validate(model, loader, criterion, device):
-    """Evaluate on validation set, return average loss and accuracy"""
+    """Evaluate on validation set, return average loss and accuracy."""
     model.eval()
     running_loss = 0.0
     correct = 0
@@ -116,40 +132,49 @@ def validate(model, loader, criterion, device):
 
 def train_model(model, train_loader, val_loader, class_weights):
     """
-    Full training pipeline.
-    Returns the trained model and training history.
+    Full training pipeline with warmup + cosine annealing, MixUp,
+    gradient clipping, and label smoothing.
     """
     device = Config.DEVICE
     model = model.to(device)
 
-    # Loss Function (Focal Loss with class weights)
-    criterion = FocalLoss(weight=class_weights, gamma=Config.FOCAL_GAMMA)
+    # ── Loss Function (Focal Loss with class weights + label smoothing) ──
+    criterion = FocalLoss(
+        weight=class_weights,
+        gamma=Config.FOCAL_GAMMA,
+        label_smoothing=Config.LABEL_SMOOTHING,
+    )
 
-    # Optimizer (AdamW = Adam + proper weight decay)
+    # ── Optimizer (AdamW = Adam + proper weight decay) ──
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=Config.LEARNING_RATE,
         weight_decay=Config.WEIGHT_DECAY
     )
 
-    # Learning Rate Scheduler (Cosine Annealing with Warm Restarts)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+    # ── Learning Rate Scheduler (Warmup → Cosine Annealing) ──
+    warmup = torch.optim.lr_scheduler.LinearLR(
+        optimizer, start_factor=0.1, total_iters=Config.WARMUP_EPOCHS
+    )
+    cosine = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
+        optimizer, T_0=10, T_mult=2, eta_min=Config.MIN_LR
+    )
+    scheduler = torch.optim.lr_scheduler.SequentialLR(
         optimizer,
-        T_0=10,
-        T_mult=2,
-        eta_min=Config.MIN_LR
+        schedulers=[warmup, cosine],
+        milestones=[Config.WARMUP_EPOCHS]
     )
 
-    # Mixed Precision Scaler
+    # ── Mixed Precision Scaler ──
     scaler = GradScaler(enabled=Config.USE_AMP)
 
-    # Early Stopping
+    # ── Early Stopping ──
     early_stopping = EarlyStopping(patience=Config.PATIENCE)
 
-    # TensorBoard Logger
+    # ── TensorBoard Logger ──
     writer = SummaryWriter(Config.RESULTS_DIR / "tensorboard")
 
-    # Training History
+    # ── Training History ──
     history = {
         'train_loss': [], 'train_acc': [],
         'val_loss': [], 'val_acc': [], 'lr': []
@@ -162,6 +187,8 @@ def train_model(model, train_loader, val_loader, class_weights):
     print(f"  Training TomatoCareNet on {device}")
     print(f"  Epochs: {Config.NUM_EPOCHS} | Batch: {Config.BATCH_SIZE} | LR: {Config.LEARNING_RATE}")
     print(f"  AMP: {Config.USE_AMP} | Focal gamma: {Config.FOCAL_GAMMA}")
+    print(f"  MixUp alpha: {Config.MIXUP_ALPHA} | Label smoothing: {Config.LABEL_SMOOTHING}")
+    print(f"  Warmup: {Config.WARMUP_EPOCHS} epochs | Grad clip: {Config.GRAD_CLIP_NORM}")
     print(f"{'='*60}\n")
 
     for epoch in range(Config.NUM_EPOCHS):
@@ -199,13 +226,18 @@ def train_model(model, train_loader, val_loader, class_weights):
             best_val_acc = val_acc
             best_model_state = copy.deepcopy(model.state_dict())
             Config.CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
+            save_path = Config.CHECKPOINT_DIR / "best_model.pth"
+            tmp_path = save_path.with_suffix('.pth.tmp')
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': best_model_state,
                 'optimizer_state_dict': optimizer.state_dict(),
                 'val_acc': val_acc,
                 'val_loss': val_loss,
-            }, Config.CHECKPOINT_DIR / "best_model.pth")
+            }, tmp_path)
+            if save_path.exists():
+                save_path.unlink()
+            tmp_path.rename(save_path)
             improved = " * BEST"
 
         # Print progress
@@ -224,8 +256,9 @@ def train_model(model, train_loader, val_loader, class_weights):
 
     writer.close()
 
-    # Load best model
-    model.load_state_dict(best_model_state)
+    # Load best model for return
+    if best_model_state is not None:
+        model.load_state_dict(best_model_state)
     print(f"\nTraining complete. Best validation accuracy: {best_val_acc:.2f}%")
 
     return model, history

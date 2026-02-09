@@ -27,26 +27,39 @@ class SEBlock(nn.Module):
 
 class ConvBlock(nn.Module):
     """
-    Standard Convolutional Block:
-    Conv3x3 -> BN -> ReLU -> Conv3x3 -> BN -> ReLU -> MaxPool -> Dropout
+    Residual Convolutional Block:
+    Conv3x3 -> BN -> ReLU -> Conv3x3 -> BN -> (+shortcut) -> ReLU -> MaxPool -> Dropout
+
+    The 1x1 shortcut projection lets gradients flow directly through the
+    network, improving training from scratch with near-zero param overhead.
     """
     def __init__(self, in_channels, out_channels, dropout_rate=0.25):
         super().__init__()
-        self.block = nn.Sequential(
+        self.conv1 = nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
-            
+        )
+        self.conv2 = nn.Sequential(
             nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, bias=False),
             nn.BatchNorm2d(out_channels),
-            nn.ReLU(inplace=True),
-            
-            nn.MaxPool2d(kernel_size=2, stride=2),
-            nn.Dropout2d(dropout_rate)
         )
+        self.shortcut = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False),
+            nn.BatchNorm2d(out_channels),
+        ) if in_channels != out_channels else nn.Identity()
+        self.relu = nn.ReLU(inplace=True)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.dropout = nn.Dropout2d(dropout_rate)
 
     def forward(self, x):
-        return self.block(x)
+        identity = self.shortcut(x)
+        out = self.conv1(x)
+        out = self.conv2(out)
+        out = self.relu(out + identity)
+        out = self.pool(out)
+        out = self.dropout(out)
+        return out
 
 class TomatoCareNet(nn.Module):
     """

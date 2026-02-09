@@ -33,8 +33,8 @@ def get_train_transforms():
 
         # Color: simulate different lighting conditions
         A.RandomBrightnessContrast(
-            brightness_limit=0.3,
-            contrast_limit=0.3,
+            brightness_limit=0.2,
+            contrast_limit=0.2,
             p=0.5
         ),
         A.HueSaturationValue(
@@ -43,17 +43,6 @@ def get_train_transforms():
             val_shift_limit=20,
             p=0.3
         ),
-        A.ColorJitter(
-            brightness=0.3, contrast=0.3,
-            saturation=0.2, hue=0.1,
-            p=0.4
-        ),
-
-        # Local contrast enhancement (helps subtle lesion patterns)
-        A.CLAHE(clip_limit=2.0, p=0.3),
-
-        # Elastic warping: simulate leaf bending
-        A.ElasticTransform(alpha=1, sigma=50, p=0.2),
 
         # Noise: simulate camera sensor noise
         A.GaussNoise(p=0.2),

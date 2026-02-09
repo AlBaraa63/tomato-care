@@ -1,3 +1,4 @@
+
 """
 TomatoCare - Main Training Script
 Run: python main.py
@@ -6,13 +7,15 @@ import torch
 import random
 import numpy as np
 from src.config import Config
-from src.data_loader import get_dataloaders
+from src.data_loader import get_dataloaders, TomatoDataset, get_val_transforms
 from src.model import TomatoCareNet, count_parameters
 from src.train import train_model
 from src.evaluate import (
-    evaluate_model, print_classification_report,
+    evaluate_model, evaluate_model_tta,
+    print_classification_report,
     plot_confusion_matrix, plot_training_history
 )
+from src.gradcam import visualize_gradcam
 
 
 def set_seed(seed=42):
@@ -34,6 +37,7 @@ def main():
     Config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     (Config.RESULTS_DIR / "plots").mkdir(exist_ok=True)
     (Config.RESULTS_DIR / "metrics").mkdir(exist_ok=True)
+    (Config.RESULTS_DIR / "gradcam").mkdir(exist_ok=True)
 
     # 3. Load data
     print("Loading datasets...")
@@ -53,18 +57,38 @@ def main():
         save_path=Config.RESULTS_DIR / "plots" / "training_history.png"
     )
 
-    # 7. Evaluate on test set
+    # 7. Evaluate on test set (standard)
     print("\nEvaluating on test set...")
     y_true, y_pred, y_probs = evaluate_model(model, test_loader)
-
-    # 8. Print metrics
     print_classification_report(y_true, y_pred)
-
-    # 9. Plot confusion matrix
     plot_confusion_matrix(
         y_true, y_pred,
         save_path=Config.RESULTS_DIR / "plots" / "confusion_matrix.png"
     )
+
+    # 8. Evaluate with TTA (for best possible test metrics)
+    print("\nEvaluating with Test Time Augmentation (5 augments)...")
+    test_dataset = TomatoDataset(Config.TEST_DIR, transform=get_val_transforms())
+    y_true_tta, y_pred_tta, _ = evaluate_model_tta(model, test_dataset, num_augments=5)
+    print_classification_report(y_true_tta, y_pred_tta)
+    plot_confusion_matrix(
+        y_true_tta, y_pred_tta,
+        save_path=Config.RESULTS_DIR / "plots" / "confusion_matrix_tta.png"
+    )
+
+    # 9. Grad-CAM on a sample from each class
+    print("\nGenerating Grad-CAM visualizations...")
+    model.to(Config.DEVICE)
+    for class_name in Config.CLASS_NAMES:
+        class_dir = Config.TEST_DIR / class_name
+        if not class_dir.exists():
+            continue
+        sample = next(class_dir.iterdir(), None)
+        if sample:
+            visualize_gradcam(
+                model, str(sample),
+                save_path=Config.RESULTS_DIR / "gradcam" / f"gradcam_{class_name}.png"
+            )
 
     # 10. Save final model
     final_dir = Config.PROJECT_ROOT / "models" / "final"
